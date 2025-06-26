@@ -3,7 +3,7 @@ description: >
   A lightweight, in-memory Dart SDK for simulating money transactions (deposit, withdraw, transfer),
   similar to a mobile money platform like Orange Money.
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/YannMartin123/sikka_pay
 
 environment:
   sdk: ^3.7.2

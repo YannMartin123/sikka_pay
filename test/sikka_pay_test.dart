@@ -1,12 +1,17 @@
 import 'package:test/test.dart';
 import 'package:sikka_pay/sikka_pay.dart';
+import 'package:sikka_pay/src/infrastructure/fake_account_data_source.dart';
 
 void main() {
-  group('SikkaPay SDK', () {
+  group('SikkaPay SDK (refonte)', () {
     late SikkaPay sdk;
+    late FakeAccountDataSource db;
 
     setUp(() {
-      sdk = SikkaPay(apiKey: 'test-key');
+      db = FakeAccountDataSource();
+      final repo = AccountRepository(db);
+      sdk = SikkaPay(apiKey: 'demo-key', repository: repo);
+
       sdk.createAccount(
         phoneNumber: '611111111',
         initialBalance: 5000,

@@ -1,32 +1,36 @@
 import '../domain/entities/account.dart';
-import 'fake_database.dart';
-import '../domain/exceptions/account_not_found_exception.dart';
+import '../domain/datasources/account_data_source.dart';
 
 class AccountRepository {
+  final AccountDataSource dataSource;
+
+  AccountRepository(this.dataSource);
+
+  void createAccount(Account account) {
+    if (dataSource.exists(account.phoneNumber)) {
+      throw Exception('Le compte ${account.phoneNumber} existe déjà.');
+    }
+    dataSource.saveAccount(account);
+  }
+
   Account getAccountOrThrow(String phoneNumber) {
-    final account = FakeDatabase.getAccount(phoneNumber);
-    if (account == null) throw AccountNotFoundException(phoneNumber);
-    return account;
+    final acc = dataSource.getAccount(phoneNumber);
+    if (acc == null) {
+      throw Exception('Compte introuvable: $phoneNumber');
+    }
+    return acc;
+  }
+
+  void update(Account account) => dataSource.saveAccount(account);
+
+  // ✅ Ajoute ces deux méthodes
+  bool authenticate(String phoneNumber, String pinCode) {
+    return dataSource.authenticate(phoneNumber, pinCode);
   }
 
   void saveAccount(Account account) {
-    FakeDatabase.updateAccount(account);
+    dataSource.saveAccount(account);
   }
 
-  bool authenticate(String phoneNumber, String pinCode) {
-    final account = FakeDatabase.getAccount(phoneNumber);
-    if (account == null) return false;
-    return account.verifyPin(pinCode);
-  }
-
-  bool exists(String phoneNumber) {
-    return FakeDatabase.accountExists(phoneNumber);
-  }
-
-  void createAccount(Account account) {
-    if (exists(account.phoneNumber)) {
-      throw Exception('Le compte ${account.phoneNumber} existe déjà.');
-    }
-    FakeDatabase.addAccount(account);
-  }
+  void clear() => dataSource.clear();
 }

@@ -33,4 +33,8 @@ class FakeDatabase {
   static Map<String, Account> getAllAccounts() {
     return Map.unmodifiable(_accounts);
   }
+
+  static void reset() {
+    _accounts.clear();
+  }
 }

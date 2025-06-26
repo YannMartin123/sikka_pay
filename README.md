@@ -1,25 +1,38 @@
-# 🧾 SikkaPay
+# SikkaPay 🟠
 
-SikkaPay is a lightweight Dart SDK that simulates mobile money operations (deposit, withdraw, transfer)
-with simple in-memory logic and PIN-based authentication.
+SikkaPay est une SDK Dart légère permettant de simuler les fonctionnalités d’un portefeuille mobile comme Orange Money ou MTN Mobile Money.
 
-## 🔧 Features
+## ✨ Fonctionnalités
 
-- ✅ Deposit money without PIN
-- ✅ Withdraw money with PIN
-- ✅ Transfer money with PIN
-- ✅ Create accounts with initial balance and 4-digit PIN
+- Création de compte avec PIN
+- Dépôt, retrait et transfert d’argent
+- Validation automatique (numéro, montant, PIN)
+- Injection de base de données (Fake ou vraie)
+- Gestion simple des clés API
 
-## 🚀 Usage
+---
 
-```dart
+## 🚀 Installation
+
+Ajoutez ceci à votre `pubspec.yaml` :
+
+```yaml
+dependencies:
+  sikka_pay:
+    git:
+      url: https://github.com/votre-utilisateur/sikka_pay.git
+
+🔧 Exemple d’utilisation
+dart
+Copier
+Modifier
 import 'package:sikka_pay/sikka_pay.dart';
 
 void main() {
-  final sdk = SikkaPay(apiKey: 'your-api-key');
+  final repo = AccountRepository(FakeAccountDataSource());
+  final sdk = SikkaPay(apiKey: 'demo-key', repository: repo);
 
   sdk.createAccount(phoneNumber: '670000000', initialBalance: 5000, pinCode: '1234');
-  sdk.deposit(phoneNumber: '670000000', amount: 2000);
-  sdk.withdraw(phoneNumber: '670000000', amount: 1000, pinCode: '1234');
-  print(sdk.getBalance('670000000')); // 6000
+  sdk.deposit(phoneNumber: '670000000', amount: 1000);
+  print(sdk.getBalance('670000000')); // 6000.0
 }
