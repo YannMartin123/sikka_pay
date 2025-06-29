@@ -1,17 +1,23 @@
-enum TransactionType { deposit, withdraw, transfer }
+enum TransactionType { deposit, withdrawal, transfer }
 
 class Transaction {
-  final String id;
   final String phoneNumber;
-  final double amount;
   final TransactionType type;
-  final DateTime timestamp;
+  final double amount;
+  final DateTime date;
+  final String? destination; // Pour les transferts
 
   Transaction({
-    required this.id,
     required this.phoneNumber,
-    required this.amount,
     required this.type,
-    required this.timestamp,
+    required this.amount,
+    required this.date,
+    this.destination,
   });
+
+  @override
+  String toString() {
+    return '[$type] $amount F le ${date.toIso8601String()}'
+        '${destination != null ? ' → $destination' : ''}';
+  }
 }

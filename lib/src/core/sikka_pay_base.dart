@@ -1,3 +1,5 @@
+import 'package:sikka_pay/src/domain/entities/transaction.dart';
+
 import '../domain/entities/account.dart';
 import '../infrastructure/account_repository.dart';
 import '../utils/logger.dart';
@@ -31,18 +33,23 @@ class SikkaPay {
     required double initialBalance,
     required String pinCode,
   }) {
-    Validator.phone(phoneNumber);
-    Validator.pin(pinCode);
-    Validator.amount(initialBalance);
+    ApiKeyGuard.check(_apiKey);
 
-    _repository.createAccount(
-      Account(
-        phoneNumber: phoneNumber,
-        balance: initialBalance,
-        pinCode: pinCode,
-      ),
+    Validator.phone(phoneNumber);
+    Validator.amount(initialBalance);
+    Validator.pin(pinCode);
+
+    if (_repository.exists(phoneNumber)) {
+      throw Exception('Le compte $phoneNumber existe déjà.');
+    }
+
+    final account = Account(
+      phoneNumber: phoneNumber,
+      balance: initialBalance,
+      pinCode: pinCode,
     );
 
+    _repository.saveAccount(account);
     Logger.info('Compte créé : $phoneNumber');
   }
 
@@ -86,5 +93,9 @@ class SikkaPay {
     Validator.pin(pinCode);
     Logger.info('Transfert de $amount de $from vers $to');
     _transfer.execute(from: from, to: to, amount: amount, pinCode: pinCode);
+  }
+
+  List<Transaction> getTransactionHistory(String phoneNumber) {
+    return _repository.getTransactions(phoneNumber);
   }
 }

@@ -6,4 +6,7 @@ class ApiKeyGuard {
       throw Exception('Clé API invalide.');
     }
   }
+
+  /// Méthode raccourcie pour une vérification plus lisible
+  static void check(String key) => verify(key);
 }

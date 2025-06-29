@@ -30,4 +30,9 @@ void main() {
 
   print('Solde final émetteur: ${sdk.getBalance('670000000')}');
   print('Solde final receveur: ${sdk.getBalance('690000000')}');
+
+  final history = sdk.getTransactionHistory('670000000');
+  for (final tx in history) {
+    print('${tx.type}: ${tx.amount} le ${tx.date}');
+  }
 }

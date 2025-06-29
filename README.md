@@ -1,38 +1,98 @@
-# SikkaPay 🟠
+# 📲 SikkaPay SDK
 
-SikkaPay est une SDK Dart légère permettant de simuler les fonctionnalités d’un portefeuille mobile comme Orange Money ou MTN Mobile Money.
+> Simulateur simple et extensible de service de paiement mobile en Dart.
 
-## ✨ Fonctionnalités
+SikkaPay permet de :
+- Créer des comptes
+- Effectuer des dépôts, retraits et transferts
+- Consulter l’historique des transactions
 
-- Création de compte avec PIN
-- Dépôt, retrait et transfert d’argent
-- Validation automatique (numéro, montant, PIN)
-- Injection de base de données (Fake ou vraie)
-- Gestion simple des clés API
+Idéal pour tester, prototyper ou construire une base avant d’ajouter un backend réel.
 
 ---
 
-## 🚀 Installation
+## ✨ Fonctionnalités
 
-Ajoutez ceci à votre `pubspec.yaml` :
+✅ Créer un compte mobile  
+✅ Déposer de l’argent  
+✅ Retirer de l’argent (avec vérification du PIN)  
+✅ Transférer de l’argent entre comptes  
+✅ Accéder à l’historique des transactions
+
+---
+
+## ⚙️ Installation
+
+Ajoutez dans votre `pubspec.yaml` :
 
 ```yaml
 dependencies:
-  sikka_pay:
-    git:
-      url: https://github.com/votre-utilisateur/sikka_pay.git
-
-🔧 Exemple d’utilisation
-dart
-Copier
-Modifier
+  sikka_pay: ^1.1.0
+```
+Puis lancez :
+```
+dart pub get
+```
+## 🚀 Premiers pas
+### 1️⃣ Importer le SDK
+```
 import 'package:sikka_pay/sikka_pay.dart';
+import 'package:sikka_pay/src/infrastructure/fake_account_data_source.dart';
+```
 
-void main() {
-  final repo = AccountRepository(FakeAccountDataSource());
-  final sdk = SikkaPay(apiKey: 'demo-key', repository: repo);
+### 2️⃣ Initialiser SikkaPay
+```
+final sdk = SikkaPay(
+  apiKey: 'demo-key', // clé valide
+  repository: AccountRepository(FakeAccountDataSource()),
+);
+```
+## 🛠️ Utilisation
+### ➕ Créer un compte
+```
+sdk.createAccount(
+  phoneNumber: '699999999',
+  initialBalance: 500,
+  pinCode: '0000',
+);
+```
+### 💰 Déposer de l’argent
+```
+sdk.deposit(phoneNumber: '699999999', amount: 200);
+```
 
-  sdk.createAccount(phoneNumber: '670000000', initialBalance: 5000, pinCode: '1234');
-  sdk.deposit(phoneNumber: '670000000', amount: 1000);
-  print(sdk.getBalance('670000000')); // 6000.0
+### ➖ Retirer de l’argent
+```
+sdk.withdraw(
+  phoneNumber: '699999999',
+  amount: 100,
+  pinCode: '0000',
+);
+```
+### 🔁 Transférer de l’argent
+```
+sdk.transfer(
+  from: '699999999',
+  to: '688888888',
+  amount: 50,
+  pinCode: '0000',
+);
+```
+
+### 📜 Historique des transactions
+```
+final history = sdk.getTransactionHistory('699999999');
+
+for (final tx in history) {
+  print('${tx.type}: ${tx.amount} le ${tx.date}');
 }
+```
+### 🧪 Exécuter les tests
+Le SDK est livré avec des tests unitaires.
+Lancez-les avec :
+```
+dart test
+```
+
+## 📝 Licence
+MIT © Yann

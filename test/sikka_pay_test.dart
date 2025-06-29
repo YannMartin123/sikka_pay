@@ -1,6 +1,8 @@
+import 'package:sikka_pay/src/domain/entities/transaction.dart';
 import 'package:test/test.dart';
 import 'package:sikka_pay/sikka_pay.dart';
 import 'package:sikka_pay/src/infrastructure/fake_account_data_source.dart';
+import 'package:sikka_pay/src/infrastructure/account_repository.dart';
 
 void main() {
   group('SikkaPay SDK (refonte)', () {
@@ -55,5 +57,26 @@ void main() {
         throwsException,
       );
     });
+  });
+
+  test('SikkaPay SDK (v1.1.0) Historique des transactions', () {
+    final db = FakeAccountDataSource();
+    final sdk = SikkaPay(apiKey: 'demo-key', repository: AccountRepository(db));
+
+    sdk.createAccount(
+      phoneNumber: '699999999',
+      initialBalance: 100,
+      pinCode: '0000',
+    );
+
+    sdk.deposit(phoneNumber: '699999999', amount: 1000);
+    sdk.withdraw(phoneNumber: '699999999', amount: 300, pinCode: '0000');
+
+    final history = sdk.getTransactionHistory('699999999');
+    expect(history.length, 2);
+
+    // On s’assure de l’ordre chronologique exact
+    expect(history.first.type, TransactionType.deposit);
+    expect(history.last.type, TransactionType.withdrawal);
   });
 }

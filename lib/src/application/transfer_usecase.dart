@@ -1,3 +1,5 @@
+import 'package:sikka_pay/src/domain/entities/transaction.dart';
+
 import '../infrastructure/account_repository.dart';
 import '../domain/exceptions/insufficient_funds_exception.dart';
 
@@ -28,5 +30,21 @@ class TransferUseCase {
 
     repository.saveAccount(sender);
     repository.saveAccount(receiver);
+    repository.saveTransaction(
+      Transaction(
+        phoneNumber: sender.phoneNumber,
+        type: TransactionType.deposit,
+        amount: amount,
+        date: DateTime.now(),
+      ),
+    );
+    repository.saveTransaction(
+      Transaction(
+        phoneNumber: receiver.phoneNumber,
+        type: TransactionType.deposit,
+        amount: amount,
+        date: DateTime.now(),
+      ),
+    );
   }
 }

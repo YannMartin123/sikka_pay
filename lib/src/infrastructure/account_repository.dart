@@ -1,3 +1,4 @@
+import 'package:sikka_pay/src/domain/entities/transaction.dart';
 import '../domain/entities/account.dart';
 import '../domain/datasources/account_data_source.dart';
 
@@ -7,10 +8,14 @@ class AccountRepository {
   AccountRepository(this.dataSource);
 
   void createAccount(Account account) {
-    if (dataSource.exists(account.phoneNumber)) {
+    if (exists(account.phoneNumber)) {
       throw Exception('Le compte ${account.phoneNumber} existe déjà.');
     }
     dataSource.saveAccount(account);
+  }
+
+  bool exists(String phoneNumber) {
+    return dataSource.exists(phoneNumber);
   }
 
   Account getAccountOrThrow(String phoneNumber) {
@@ -21,16 +26,20 @@ class AccountRepository {
     return acc;
   }
 
-  void update(Account account) => dataSource.saveAccount(account);
-
-  // ✅ Ajoute ces deux méthodes
   bool authenticate(String phoneNumber, String pinCode) {
     return dataSource.authenticate(phoneNumber, pinCode);
   }
+
+  void update(Account account) => dataSource.saveAccount(account);
 
   void saveAccount(Account account) {
     dataSource.saveAccount(account);
   }
 
   void clear() => dataSource.clear();
+
+  void saveTransaction(Transaction tx) => dataSource.saveTransaction(tx);
+
+  List<Transaction> getTransactions(String phone) =>
+      dataSource.getTransactions(phone);
 }

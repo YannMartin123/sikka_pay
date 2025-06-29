@@ -1,4 +1,5 @@
 import '../domain/entities/account.dart';
+import '../domain/entities/transaction.dart';
 
 class FakeDatabase {
   static final Map<String, Account> _accounts = {
@@ -37,4 +38,6 @@ class FakeDatabase {
   static void reset() {
     _accounts.clear();
   }
+
+  final Map<String, List<Transaction>> transactionHistory = {};
 }
